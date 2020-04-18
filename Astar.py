@@ -18,7 +18,7 @@ class Node:
         self.closeNodes = []
         self.path = []
         self.parent = None
-        if(random.uniform(0,1)<0.2):
+        if(random.uniform(0,1)<0.3):
             self.isWall = True
 
 
@@ -54,7 +54,7 @@ class Node:
 #============================================================================================
 class Astar:
     
-    def __init__(self,width,height,num_col,num_row,startNode,endNode):
+    def __init__(self,width,height,num_col,num_row,startNode,endNode,delay):
         self.width = width
         self.height = height
         self.col = num_col
@@ -73,11 +73,14 @@ class Astar:
         self.openSet = []
         self.closeSet = []
 
+        #delay of the animation
+        self.delay = delay
+
         self.setup(startNode,endNode)
         self.rootTk = Tk()
         self.window = Canvas(self.rootTk, width=width, height=height)
         self.window.pack()
-        self.rootTk.after(100,self.draw)
+        self.rootTk.after(self.delay,self.draw)
         self.rootTk.mainloop()
 
 #--------------------------------------------------------------------------------
@@ -123,23 +126,24 @@ class Astar:
 
             
             for currCloseNode in currNode.closeNodes:
-                if currCloseNode in self.closeSet :
-                    continue
-                elif(currCloseNode.isWall is False):
+                if(currCloseNode  not in self.closeSet and currCloseNode.isWall is False):
                     tenative_g = currNode.g +1
+                    foundBetterSol = False
 
-                    if(currCloseNode in self.openSet ):#If I already evaluteted 
-                        if(tenative_g < currCloseNode.g):
-                            currCloseNode.g = tenative_g
+                    if(currCloseNode in self.openSet and  tenative_g < currCloseNode.g):#If I already evaluteted 
+                        currCloseNode.g = tenative_g
+                        foundBetterSol = True
                     else:
                         currCloseNode.g = tenative_g
                         self.addOpenSet(currCloseNode)
+                        foundBetterSol = True
                         
 
-                #Heuristic
-                currCloseNode.h = self.guessDistance(currCloseNode)
-                currCloseNode.f = currCloseNode.h + currCloseNode.g
-                currCloseNode.parent = currNode
+                    #Heuristic
+                    if(foundBetterSol is True):
+                        currCloseNode.h = self.guessDistance(currCloseNode)
+                        currCloseNode.f = currCloseNode.h + currCloseNode.g
+                        currCloseNode.parent = currNode
 
 
 
@@ -172,7 +176,7 @@ class Astar:
                 self.window.create_rectangle(top_left[0],top_left[1],bottom_right[0],bottom_right[1], fill='yellow')
 
             if(finished is not True):
-                self.rootTk.after(100,self.draw)
+                self.rootTk.after(self.delay,self.draw)
             else:
                 print("Finished!")    
         else:
@@ -194,6 +198,8 @@ class Astar:
                 self.grid[x][y].addCloseNodes(self.grid,self.row,self.col)
 
 
+        self.endNode.isWall = False
+        self.startNode.isWall = False
         self.openSet.append(self.startNode)
         
        # print self.grid
