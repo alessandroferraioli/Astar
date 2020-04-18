@@ -18,8 +18,7 @@ class Node:
         self.closeNodes = []
         self.path = []
         self.parent = None
-        if(random.uniform(0,1)<0.3):
-            self.isWall = True
+
 
 
 
@@ -54,7 +53,7 @@ class Node:
 #============================================================================================
 class Astar:
     
-    def __init__(self,width,height,num_col,num_row,startNode,endNode,delay):
+    def __init__(self,width,height,num_col,num_row,startNode,endNode,delay,wallGrid):
         self.width = width
         self.height = height
         self.col = num_col
@@ -64,7 +63,7 @@ class Astar:
         #Assuming square
         self.sizeNode = int(width/num_col)
         self.grid = np.empty([self.row,self.col], dtype=object)
-
+        self.walls = wallGrid
         self.startNode = None 
         self.endNode = None
         
@@ -191,6 +190,8 @@ class Astar:
                     self.startNode = self.grid[x][y]
                 elif(x == endNode[0] and y == endNode[1]):
                     self.endNode = self.grid[x][y]
+                if(self.walls[x][y] == -1):
+                    self.grid[x][y].isWall = True
 
         #Setting close nodes
         for x in range(self.row):
