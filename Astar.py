@@ -13,10 +13,12 @@ class Node:
         self.g = 0
         self.f = 0
         self.isWall = False
+        self.inCloseSet = False
+        self.inOpenSet = False
         self.closeNodes = []
         self.path = []
         self.parent = None
-        if(random.uniform(0,1)<0.0):
+        if(random.uniform(0,1)<0.2):
             self.isWall = True
 
 
@@ -77,6 +79,25 @@ class Astar:
         self.window.pack()
         self.rootTk.after(100,self.draw)
         self.rootTk.mainloop()
+
+#--------------------------------------------------------------------------------
+    def addOpenSet(self,node):
+        self.openSet.append(node)
+        node.inOpenSet = True
+        node.inCloseSet = False
+#--------------------------------------------------------------------------------
+    def addCloseSet(self,node):
+        self.closeSet.append(node)
+        node.inOpenSet = False
+        node.inCloseSet = True
+#--------------------------------------------------------------------------------
+    def evalutePath(self,node):
+        del self.path[:]
+        self.path.append(node)
+        while(node.parent is not None):
+            self.path.append(node.parent)
+            node = node.parent
+
 #--------------------------------------------------------------------------------
     def guessDistance(self,currNode):
         return math.sqrt((self.endNode.x - currNode.x )**2 + (self.endNode.y - currNode.y)**2 )
@@ -95,14 +116,10 @@ class Astar:
             currNode = self.openSet[currIndex]
             if(currNode is self.endNode ):
                 finished = True
-                temp = currNode
-                self.path.append(temp)
-                while(temp.parent is not None):
-                    self.path.append(temp.parent)
-                    temp = temp.parent
+                self.evalutePath(currNode)
             
             self.openSet.remove(currNode)
-            self.closeSet.append(currNode)
+            self.addCloseSet(currNode)
 
             
             for currCloseNode in currNode.closeNodes:
@@ -116,45 +133,35 @@ class Astar:
                             currCloseNode.g = tenative_g
                     else:
                         currCloseNode.g = tenative_g
-                        self.openSet.append(currCloseNode)
+                        self.addOpenSet(currCloseNode)
+                        
 
                 #Heuristic
                 currCloseNode.h = self.guessDistance(currCloseNode)
                 currCloseNode.f = currCloseNode.h + currCloseNode.g
                 currCloseNode.parent = currNode
 
-             
 
+
+    
             #Redraw the grid
             for x in range(self.row):
                 for  y in range(self.col):
                     top_left = [x*self.sizeNode+1,y*self.sizeNode+1]
                     bottom_right  = [x*self.sizeNode+ self.sizeNode ,y*self.sizeNode+self.sizeNode]
-                    if(self.grid[x][y].isWall is False):
-                        self.window.create_rectangle(top_left[0],top_left[1],bottom_right[0],bottom_right[1], fill='white')
-                    else:
+                    if(self.grid[x][y].isWall is True):
                         self.window.create_rectangle(top_left[0],top_left[1],bottom_right[0],bottom_right[1], fill='black')
-            #Drawing open set
-            for item in self.openSet:
-                x = item.x
-                y = item.y
-                top_left = [x*self.sizeNode+1,y*self.sizeNode+1]
-                bottom_right  = [x*self.sizeNode+ self.sizeNode ,y*self.sizeNode+self.sizeNode]
-                self.window.create_rectangle(top_left[0],top_left[1],bottom_right[0],bottom_right[1], fill='green')
-
-            #Drawing close set
-            for item in self.closeSet:
-                x = item.x
-                y = item.y
-                top_left = [x*self.sizeNode+1,y*self.sizeNode+1]
-                bottom_right  = [x*self.sizeNode+ self.sizeNode ,y*self.sizeNode+self.sizeNode]
-                self.window.create_rectangle(top_left[0],top_left[1],bottom_right[0],bottom_right[1], fill='red')
+                    elif(self.grid[x][y].inOpenSet is True):
+                        self.window.create_rectangle(top_left[0],top_left[1],bottom_right[0],bottom_right[1], fill='green')
+                    elif(self.grid[x][y].inCloseSet is True):
+                        self.window.create_rectangle(top_left[0],top_left[1],bottom_right[0],bottom_right[1], fill='red')
+                    else:
+                        self.window.create_rectangle(top_left[0],top_left[1],bottom_right[0],bottom_right[1], fill='white')
 
             #Drawing End point
             top_left = [self.endNode.x*self.sizeNode+1,self.endNode.y*self.sizeNode+1]
             bottom_right  = [self.endNode.x*self.sizeNode+ self.sizeNode ,self.endNode.y*self.sizeNode+self.sizeNode]
             self.window.create_rectangle(top_left[0],top_left[1],bottom_right[0],bottom_right[1], fill='blue')
-
 
 
             for item in self.path:
@@ -169,7 +176,7 @@ class Astar:
             else:
                 print("Finished!")    
         else:
-            print("Finished!")
+            print("Solution does not exist!")
 
 #--------------------------------------------------------------------------------
     def setup(self,startNode,endNode):
