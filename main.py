@@ -1,20 +1,37 @@
 from Astar import *
 
-row = 20
-col = 30
+row = 10
+col = 10
 width = 800
 height = 800
 delay = 100
+
+
+mouseDxClicked = -1
 
 sizeSquare = min(width/col,height/row)
 grid  = np.ones([row,col]) 
 
 root = Tk()
+
+
+
+#===================================================================================
+def mouseMove(event):
+    if (mouseDxClicked == 1 and grid[ int(event.y/sizeSquare)][int(event.x/sizeSquare)] == 1 ):
+        grid[ int(event.y/sizeSquare)][int(event.x/sizeSquare)] = grid[ int(event.y/sizeSquare)][int(event.x/sizeSquare)] * -1
+    elif (mouseDxClicked == -1 and grid[ int(event.y/sizeSquare)][int(event.x/sizeSquare)] == -1 ):
+        grid[ int(event.y/sizeSquare)][int(event.x/sizeSquare)] = grid[ int(event.y/sizeSquare)][int(event.x/sizeSquare)] * -1
+
+    #print event.x ,event.y
+
 #===================================================================================
 def callback(event):
-    clickX = event.x
-    clickY = event.y
-    grid[ int(event.y/sizeSquare)][int(event.x/sizeSquare)] = grid[ int(event.y/sizeSquare)][int(event.x/sizeSquare)] * -1
+    global mouseDxClicked
+    mouseDxClicked = mouseDxClicked*(-1)
+    # clickX = event.x
+    # clickY = event.y
+    # grid[ int(event.y/sizeSquare)][int(event.x/sizeSquare)] = grid[ int(event.y/sizeSquare)][int(event.x/sizeSquare)] * -1
 #===================================================================================
 def exit(e):
     root.destroy()
@@ -34,6 +51,7 @@ def main():
 
     root.bind("<Button-1>", callback)
     root.bind("<Escape>", exit)
+    root.bind('<Motion>',mouseMove)
     window = Canvas(root, width=width, height=height)
     window.pack()
     root.after(100,createWalls,window,root)
