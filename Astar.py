@@ -53,7 +53,7 @@ class Node:
 #============================================================================================
 class Astar:
     
-    def __init__(self,width,height,num_col,num_row,startNode,endNode,delay,wallGrid):
+    def __init__(self,width,height,num_row,num_col,startNode,endNode,delay,wallGrid):
         self.width = width
         self.height = height
         self.col = num_col
@@ -61,7 +61,7 @@ class Astar:
 
 
         #Assuming square
-        self.sizeNode = int(width/num_col)
+        self.sizeNode =  min(width/num_col,height/num_row)
         self.grid = np.empty([self.row,self.col], dtype=object)
         self.walls = wallGrid
         self.startNode = None 
@@ -153,18 +153,18 @@ class Astar:
                     top_left = [x*self.sizeNode+1,y*self.sizeNode+1]
                     bottom_right  = [x*self.sizeNode+ self.sizeNode ,y*self.sizeNode+self.sizeNode]
                     if(self.grid[x][y].isWall is True):
-                        self.window.create_rectangle(top_left[0],top_left[1],bottom_right[0],bottom_right[1], fill='black')
+                        self.window.create_rectangle(top_left[1],top_left[0],bottom_right[1],bottom_right[0], fill='black')
                     elif(self.grid[x][y].inOpenSet is True):
-                        self.window.create_rectangle(top_left[0],top_left[1],bottom_right[0],bottom_right[1], fill='green')
+                        self.window.create_rectangle(top_left[1],top_left[0],bottom_right[1],bottom_right[0], fill='green')
                     elif(self.grid[x][y].inCloseSet is True):
-                        self.window.create_rectangle(top_left[0],top_left[1],bottom_right[0],bottom_right[1], fill='red')
+                        self.window.create_rectangle(top_left[1],top_left[0],bottom_right[1],bottom_right[0], fill='red')
                     else:
-                        self.window.create_rectangle(top_left[0],top_left[1],bottom_right[0],bottom_right[1], fill='white')
+                        self.window.create_rectangle(top_left[1],top_left[0],bottom_right[1],bottom_right[0], fill='white')
 
             #Drawing End point
             top_left = [self.endNode.x*self.sizeNode+1,self.endNode.y*self.sizeNode+1]
             bottom_right  = [self.endNode.x*self.sizeNode+ self.sizeNode ,self.endNode.y*self.sizeNode+self.sizeNode]
-            self.window.create_rectangle(top_left[0],top_left[1],bottom_right[0],bottom_right[1], fill='blue')
+            self.window.create_rectangle(top_left[1],top_left[0],bottom_right[1],bottom_right[0], fill='blue')
 
 
             for item in self.path:
@@ -172,7 +172,7 @@ class Astar:
                 y = item.y
                 top_left = [x*self.sizeNode+1,y*self.sizeNode+1]
                 bottom_right  = [x*self.sizeNode+ self.sizeNode ,y*self.sizeNode+self.sizeNode]
-                self.window.create_rectangle(top_left[0],top_left[1],bottom_right[0],bottom_right[1], fill='yellow')
+                self.window.create_rectangle(top_left[1],top_left[0],bottom_right[1],bottom_right[0], fill='yellow')
 
             if(finished is not True):
                 self.rootTk.after(self.delay,self.draw)
