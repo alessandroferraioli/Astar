@@ -20,5 +20,5 @@ width = 800
 height = 800
 delay = 100
 ```
-where the row and col represet the number of cells for each row and each column. The parameters width and height represent the size of the canvas. The delay parameter represents the frequency of update of the GUI. \n
+where the row and col represet the number of cells for each row and each column. The parameters width and height represent the size of the canvas. The delay parameter represents the frequency of update of the GUI.
 The alghoritm is implemented using the library Tkinter which manages the GUI. G
