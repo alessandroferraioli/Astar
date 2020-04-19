@@ -1,29 +1,24 @@
-# Foobar
+# A* Pathfinding
 
-Foobar is a Python library for dealing with word pluralization.
-
-## Installation
-
-Use the package manager [pip](https://pip.pypa.io/en/stable/) to install foobar.
-
-```bash
-pip install foobar
-```
+It is an implementation of A* algorithm.
 
 ## Usage
 
-```python
-import foobar
-
-foobar.pluralize('word') # returns 'words'
-foobar.pluralize('goose') # returns 'geese'
-foobar.singularize('phenomena') # returns 'phenomenon'
+```bash
+python main.py
 ```
+The first screen allows you to create the walls inside the map by clicking on a cell with the left button of the mouse.
+Then clicking on the (x) or pressing (esc) it will be run the alghoritm on the created map.
+## Parameters
 
-## Contributing
-Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+Inside the main is it possible to change some parameters of the program. Especially : 
 
-Please make sure to update tests as appropriate.
-
-## License
-[MIT](https://choosealicense.com/licenses/mit/)
+```python
+row = 10
+col = 10
+width = 800
+height = 800
+delay = 100
+```
+where the row and col represet the number of cells for each row and each column. The parameters width and height represent the size of the canvas. The delay parameter represents the frequency of update of the GUI. \n
+The alghoritm is implemented using the library Tkinter which manages the GUI. G
